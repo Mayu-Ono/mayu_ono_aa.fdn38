@@ -7,11 +7,15 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+
   <h1>時間管理マトリクス</h1>
-  <div id="matrix-container">
+
+  <div id="matrix-container" class="section-box">
     <div class="horizontal-indicator top-indicator">重要</div>
+
     <div id="matrix-main">
       <div class="vertical-indicator left-indicator">緊急</div>
+
       <div id="four-quadrants">
         <div id="q1" class="quadrant">
           <div class="quadrant-title">1 最優先事項　即実行！</div>
@@ -30,41 +34,43 @@
           <div id="task-list-q4" class="task-list"></div>
         </div>
       </div>
+
       <div class="vertical-indicator right-indicator">緊急ではない</div>
     </div>
+
     <div class="horizontal-indicator bottom-indicator">重要ではない</div>
   </div>
 
-<div class="completed-section section-box">
-  <h2>本日の完了タスク一覧</h2>
-  <pre id="completed"></pre>
-  <button id="copyButton">Copy</button>
-</div>
 
-<div class="annual-target section-box">
-  <h2>本年度の目標</h2>
-  <div class="target-inputs">
-    <div class="target-row">
-      <input type="text" id="target1" placeholder="目標１を入力" />
-      <button onclick="saveTarget(1)">登録</button>
-      <span id="display-target1" class="target-display"></span>
-    </div>
-    <div class="target-row">
-      <input type="text" id="target2" placeholder="目標２を入力" />
-      <button onclick="saveTarget(2)">登録</button>
-      <span id="display-target2" class="target-display"></span>
-    </div>
-    <div class="target-row">
-      <input type="text" id="target3" placeholder="目標３を入力" />
-      <button onclick="saveTarget(3)">登録</button>
-      <span id="display-target3" class="target-display"></span>
+  <div class="completed-section section-box">
+    <h2>本日の完了タスク一覧</h2>
+    <pre id="completed"></pre>
+    <button id="copyButton">コピー</button>
+  </div>
+
+
+  <div class="annual-target section-box">
+    <h2>本年度の目標</h2>
+    <div class="target-inputs">
+      <div class="target-row">
+        <input type="text" id="target1" placeholder="目標１を入力" />
+        <button onclick="saveTarget(1)">保存</button>
+        <span id="display-target1" class="target-display"></span>
+      </div>
+      <div class="target-row">
+        <input type="text" id="target2" placeholder="目標２を入力" />
+        <button onclick="saveTarget(2)">保存</button>
+        <span id="display-target2" class="target-display"></span>
+      </div>
+      <div class="target-row">
+        <input type="text" id="target3" placeholder="目標３を入力" />
+        <button onclick="saveTarget(3)">保存</button>
+        <span id="display-target3" class="target-display"></span>
+      </div>
     </div>
   </div>
-</div>
-  
-  
-  <script src="script.js"></script>
-  
 
+
+  <script src="script.js"></script>
 </body>
 </html>
