@@ -1,11 +1,11 @@
 'use strict';
 
-// 今日の日付を yyyy-mm-dd にする
-function todayString() {
+// 今日の日付を yyyy-mm-dd で返す関数
+function todayStr() {
   const d = new Date();
   return d.getFullYear() + "-" +
-    String(d.getMonth() + 1).padStart(2, "0") + "-" +
-    String(d.getDate()).padStart(2, "0");
+         String(d.getMonth() + 1).padStart(2, "0") + "-" +
+         String(d.getDate()).padStart(2, "0");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -16,12 +16,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const completedBox = document.getElementById("completed");
   const copyBtn = document.getElementById("copyButton");
 
-
-  // 各象限を初期化
+  // 各象限ごとにセットアップ
   quadrantIds.forEach(qid => {
     const area = document.getElementById("task-list-" + qid);
-    const storageKey = "tasks-" + qid;
+    const key = "tasks-" + qid;
 
+    // タスクを保存
     function saveTasks() {
       const arr = [];
       area.querySelectorAll(".task-item").forEach(div => {
@@ -33,9 +33,10 @@ document.addEventListener("DOMContentLoaded", () => {
           doneDate: div.dataset.doneDate || null
         });
       });
-      localStorage.setItem(storageKey, JSON.stringify(arr));
+      localStorage.setItem(key, JSON.stringify(arr));
     }
 
+    // タスク要素を生成
     function makeTask(data) {
       const wrap = document.createElement("div");
       wrap.className = "task-item";
@@ -43,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const chk = document.createElement("input");
       chk.type = "checkbox";
       chk.className = "task-checkbox";
-      chk.checked = data && data.checked;
+      chk.checked = data && data.checked ? true : false;
 
       const txt = document.createElement("input");
       txt.type = "text";
@@ -58,25 +59,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const sel = document.createElement("select");
       sel.className = "task-status";
-      const statuses = [
-        {v:"not-started", t:"着手前"},
-        {v:"in-progress", t:"着手中"},
-        {v:"completed", t:"完了"},
-        {v:"on-hold", t:"保留"}
-      ];
-      statuses.forEach(s => {
-        const o = document.createElement("option");
-        o.value = s.v;
-        o.textContent = s.t;
-        sel.appendChild(o);
+      ["着手前","着手中","完了","保留"].forEach((label,i) => {
+        const opt = document.createElement("option");
+        const vals = ["not-started","in-progress","completed","on-hold"];
+        opt.value = vals[i];
+        opt.textContent = label;
+        sel.appendChild(opt);
       });
-      sel.value = data && data.status ? data.status : "not-started";
+      sel.value = (data && data.status) ? data.status : "not-started";
 
-      if (data && data.doneDate) wrap.dataset.doneDate = data.doneDate;
+      // 完了済みデータがあれば反映
+      if (data && data.doneDate) {
+        wrap.dataset.doneDate = data.doneDate;
+      }
 
-
-      function styleDone(flag) {
-        if (flag) {
+      // 見た目を完了スタイルにする関数
+      function applyDoneStyle(flg) {
+        if (flg) {
           txt.classList.add("task-completed");
           dl.classList.add("task-completed");
           sel.classList.add("task-completed");
@@ -92,53 +91,63 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      const initiallyDone = chk.checked || sel.value === "completed";
-      styleDone(initiallyDone);
+      // 初期状態反映
+      applyDoneStyle(chk.checked || sel.value === "completed");
 
-      function setDone(f) {
-        if (f) {
-          if (!wrap.dataset.doneDate) wrap.dataset.doneDate = todayString();
+      // 完了状態切替時の処理
+      function setDone(flg) {
+        if (flg) {
+          if (!wrap.dataset.doneDate) {
+            wrap.dataset.doneDate = todayStr();
+          }
         } else {
           delete wrap.dataset.doneDate;
         }
-        styleDone(f);
+        applyDoneStyle(flg);
         saveTasks();
-        ensureEmpty();
+        ensureBlankRow();
         refreshCompleted();
       }
 
+      // イベント類
       chk.addEventListener("change", () => setDone(chk.checked));
-      sel.addEventListener("change", () => setDone(sel.value === "completed"));
+      sel.addEventListener("change", () => {
+        setDone(sel.value === "completed");
+      });
       txt.addEventListener("input", () => {
-        saveTasks(); ensureEmpty(); refreshCompleted();
+        saveTasks();
+        ensureBlankRow();
+        refreshCompleted();
       });
       dl.addEventListener("input", () => {
-        saveTasks(); refreshCompleted();
+        saveTasks();
+        refreshCompleted();
       });
 
       wrap.appendChild(chk);
       wrap.appendChild(txt);
       wrap.appendChild(dl);
       wrap.appendChild(sel);
-
       return wrap;
     }
 
-    function ensureEmpty() {
+    // 空欄行を確保する
+    function ensureBlankRow() {
       const items = area.querySelectorAll(".task-item");
       if (items.length === 0) {
         area.appendChild(makeTask());
         return;
       }
-      const last = items[items.length - 1];
+      const last = items[items.length-1];
       if (last.querySelector(".task-name").value.trim() !== "") {
         area.appendChild(makeTask());
       }
     }
 
+    // 保存データを読み込む
     function loadTasks() {
       area.innerHTML = "";
-      const saved = localStorage.getItem(storageKey);
+      const saved = localStorage.getItem(key);
       if (saved) {
         try {
           JSON.parse(saved).forEach(obj => {
@@ -150,16 +159,16 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         area.appendChild(makeTask());
       }
-      ensureEmpty();
+      ensureBlankRow();
     }
 
     loadTasks();
-    quadrants.push({saveTasks,loadTasks,ensureEmpty,area});
+    quadrants.push({saveTasks,loadTasks,ensureBlankRow,area});
   });
 
-
+  // 本日の完了タスクをまとめる
   function refreshCompleted() {
-    const today = todayString();
+    const today = todayStr();
     const list = [];
 
     quadrants.forEach(q => {
@@ -190,16 +199,17 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("コピーする完了タスクはありません");
         return;
       }
-      navigator.clipboard.writeText(t)
-        .then(() => alert("コピーしました"))
-        .catch(() => alert("コピーに失敗しました"));
+      navigator.clipboard.writeText(t).then(() => {
+        alert("コピーしました");
+      }).catch(() => {
+        alert("コピーに失敗しました");
+      });
     });
   }
 
 });
 
-
-// 年度目標の保存
+// 年度目標（入力後にボタンで保存）
 function saveTarget(num) {
   const inp = document.getElementById("target" + num);
   const disp = document.getElementById("display-target" + num);
@@ -211,7 +221,6 @@ function saveTarget(num) {
   }
 }
 
-// 年度目標の復元
 window.addEventListener("DOMContentLoaded", () => {
   for (let i=1; i<=3; i++) {
     const saved = localStorage.getItem("annualTarget" + i);

@@ -1,54 +1,51 @@
-/* リセット */
+/* 全体リセット */
 * {
   box-sizing: border-box;
 }
-
 html, body {
   margin: 0;
   padding: 0;
+  height: 100%;
+  width: 100%;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-
-/* タイトル */
 h1 {
   margin: 20px 0 10px;
   font-size: 2rem;
   text-align: center;
 }
 
-
-/* 共通のボックス */
-.section-box {
-  margin: 20px auto;
-  padding: 15px;
-  width: 90%;
-  max-width: 1200px;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.1);
-}
-
-
-/* マトリクス */
 #matrix-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100vw;
+  max-width: 95vw;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
 }
 
 .horizontal-indicator {
-  font-size: 1.2rem;
-  padding: 6px 0;
+  font-size: 1.8rem;
+  padding: 10px 0;
   width: 100%;
   text-align: center;
   background-color: #f9f9f9;
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
+}
+
+.top-indicator {
+  border-bottom: none;
+}
+
+.bottom-indicator {
+  border-top: none;
 }
 
 #matrix-main {
@@ -61,13 +58,23 @@ h1 {
 .vertical-indicator {
   writing-mode: vertical-rl;
   text-orientation: mixed;
-  font-size: 1.2rem;
-  padding: 5px;
+  font-size: 1.8rem;
+  padding: 10px 5px;
   background-color: #f9f9f9;
   display: flex;
   align-items: center;
   justify-content: center;
+  user-select: none;
   width: 50px;
+  box-sizing: border-box;
+}
+
+.left-indicator {
+  border-right: none;
+}
+
+.right-indicator {
+  border-left: none;
 }
 
 #four-quadrants {
@@ -80,11 +87,13 @@ h1 {
 .quadrant {
   width: 50%;
   height: 50%;
-  padding: 10px;
+  padding: 15px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  background-color: white;
   border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
 #q1 { background-color: #ffe0e6; }
@@ -94,50 +103,65 @@ h1 {
 
 .quadrant-title {
   font-weight: bold;
-  margin-bottom: 8px;
-  font-size: 1rem;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  flex-shrink: 0;
 }
 
+.task-list {
+  flex: 1;
+  overflow-y: auto;
+}
 
-/* タスク */
 .task-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 6px;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
 .task-checkbox {
-  width: 18px;
-  height: 18px;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
 }
 
 .task-name {
   flex: 1;
-  padding: 4px 6px;
-  font-size: 0.95rem;
+  padding: 6px 8px;
+  font-size: 1rem;
 }
 
 .task-deadline {
-  width: 120px;
-  padding: 4px;
-  font-size: 0.9rem;
+  width: 140px;
+  padding: 6px 8px;
+  font-size: 1rem;
 }
 
 .task-status {
-  width: 110px;
-  padding: 4px;
-  font-size: 0.9rem;
+  width: 120px;
+  padding: 6px 8px;
+  font-size: 1rem;
 }
 
 .task-completed {
-  background-color: #dcdcdc;
+  background-color: #d3d3d3;
   color: #555;
   text-decoration: line-through;
 }
 
+.section-box {
+  margin: 20px auto;
+  padding: 15px;
+  width: 90%;
+  max-width: 1200px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
 
-/* 完了タスク */
 .completed-section {
   text-align: center;
 }
@@ -156,8 +180,8 @@ h1 {
 }
 
 #copyButton {
-  padding: 6px 12px;
-  font-size: 0.9rem;
+  padding: 8px 16px;
+  font-size: 1rem;
   cursor: pointer;
   border: none;
   border-radius: 6px;
@@ -165,45 +189,22 @@ h1 {
   color: #fff;
 }
 
-#copyButton:hover {
-  background: #45a049;
-}
-
-
-/* 年度目標 */
 .annual-target .target-inputs {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.annual-target .target-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .annual-target .target-row input {
-  flex: 1;
-  padding: 6px;
+  width: 100%;
+  padding: 8px;
   border: 1px solid #aaa;
-  border-radius: 5px;
-}
-
-.annual-target .target-row button {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  background: #4caf50;
-  color: white;
-  cursor: pointer;
-}
-
-.annual-target .target-row button:hover {
-  background: #45a049;
+  border-radius: 6px;
+  font-size: 1rem;
 }
 
 .target-display {
   font-weight: bold;
+  margin-left: 10px;
   color: #333;
 }
